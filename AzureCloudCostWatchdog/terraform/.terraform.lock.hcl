@@ -1,0 +1,14 @@
+azurerm
+azurerm_linux_virtual_machine_scale_set
+azurerm_redis_cache
+azurerm_postgresql_flexible_server
+azurerm_mysql_flexible_server
+azurerm_storage_account
+azurerm_storage_container
+azurerm_service_plan
+azurerm_function_app
+azurerm_application_insights
+azurerm_monitor_metric_alert
+azurerm_monitor_action_group
+
+random

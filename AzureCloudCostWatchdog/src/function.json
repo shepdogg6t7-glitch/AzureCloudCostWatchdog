@@ -1,0 +1,23 @@
+{
+  "bindings": [
+    {
+      "name": "myTimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "0 0 5 * * *",
+      "runOnStartup": false
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "type": "queue",
+      "direction": "out",
+      "name": "logQueue",
+      "queueName": "cost-watchdog-logs",
+      "connection": "AzureWebJobsStorage"
+    }
+  ]
+}

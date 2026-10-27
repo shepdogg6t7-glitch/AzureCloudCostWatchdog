@@ -1,0 +1,240 @@
+graph TD
+    %% Main Components
+    subgraph "Azure Resources"
+        %% Compute Resources
+        VM[Virtual Machines]
+        VM1[VM-Prod]
+        VM2[VM-Dev]
+        VM3[VM-Staging]
+        VM4[VM-Untagged]
+        
+        %% Azure Services
+        RG[Resource Groups]
+        TAG[Tag Services]
+        FUNCTION_APP[Azure Function App]
+        MONITOR[Monitoring]
+        STORAGE[Storage Account]
+        CONTAINER[Container for Logs]
+        
+        %% Connections
+        VM1 -. "Environment: Production" .-> FUNCTION_APP
+        VM2 -. "Environment: Dev" .-> FUNCTION_APP
+        VM3 -. "Environment: Staging" .-> FUNCTION_APP
+        VM4 -. "No Tags" .-> FUNCTION_APP
+    end
+    
+    subgraph "Cost Watchdog Application"
+        %% Application Components
+        SCANNER[VM Scanner]
+        SCHEDULER[VM Scheduler]
+        VM_MONITOR[VM Monitor]
+        NOTIFICATION[Notification System]
+        LOGGER[Logging System]
+        
+        %% Application Flow
+        SCANNER --> SCHEDULER
+        SCHEDULER --> VM_MONITOR
+        VM_MONITOR --> NOTIFICATION
+        VM_MONITOR --> LOGGER
+        NOTIFICATION -. "Teams/Slack/Webhook" .-> RG
+        LOGGER -. "Logs Storage" .-> STORAGE
+        STORAGE -. "Access Logging" .-> MONITOR
+    end
+    
+    subgraph "Execution Flow"
+        %% Scheduled Execution
+        TIMER[Timer Trigger
+              every 24h]
+        TIMER --> SCANNER
+        
+        %% Decision Logic
+        VM1 -. "Production" .-> SCANNER
+        VM2 -. "Dev" .-> SCANNER
+        VM3 -. "Staging" .-> SCANNER
+        VM4 -. "Untagged" .-> SCANNER
+        
+        %% Actions
+        VM2 --> VM_MONITOR
+        VM2 --> "Execute Shutdown"
+        VM4 --> VM_MONITOR
+        VM4 --> "Execute Shutdown"
+        VM1 --> SCANNER
+        VM1 --> "Log Only"
+        VM3 --> SCANNER
+        VM3 --> "Log Only"
+    end
+    
+    subgraph "Notification System"
+        %% Notification Channels
+        TEAMS[Microsoft Teams]
+        SLACK[Slack Webhook]
+        EMAIL[Email via Logic App]
+        WEBHOOK[Generic Webhook]
+        
+        %% Notification Flow
+        SCANNER --> TEAMS
+        SCANNER --> SLACK
+        SCANNER --> EMAIL
+        SCANNER --> WEBHOOK
+    end
+    
+    subgraph "Monitoring & Alerting"
+        %% Monitoring Components
+        APP_INSIGHTS[Azure Application Insights]
+        LOG_ANALYTICS[Log Analytics]
+        METRICS[Metrics]
+        ALERTS[Alerts]
+        
+        %% Alert Flow
+        ALERTS -. "Cost Alert" .-> ALERTS
+        ALERTS -. "VM Shutdown Alert" .-> ALERTS
+        ALERTS -. "Error Alert" .-> ALERTS
+    end
+    
+    %% Style Definitions
+    style VM fill:#FF9999,stroke:#333,stroke-width:2px
+    style VM1 fill:#FFCCCC,stroke:#333,stroke-width:2px
+    style VM2 fill:#99FF99,stroke:#333,stroke-width:2px
+    style VM3 fill:#FFFF99,stroke:#333,stroke-width:2px
+    style VM4 fill:#CCCCCC,stroke:#333,stroke-width:2px
+    
+    style FUNCTION_APP fill:#E6E6FA,stroke:#333,stroke-width:2px
+    style STORAGE fill:#FFE4B5,stroke:#333,stroke-width:2px
+    style CONTAINER fill:#FFE4B5,stroke:#333,stroke-width:2px
+    
+    style SCANNER fill:#87CEEB,stroke:#333,stroke-width:2px
+    style SCHEDULER fill:#87CEEB,stroke:#333,stroke-width:2px
+    style VM_MONITOR fill:#87CEEB,stroke:#333,stroke-width:2px
+    style NOTIFICATION fill:#87CEEB,stroke:#333,stroke-width:2px
+    style LOGGER fill:#87CEEB,stroke:#333,stroke-width:2px
+    
+    style TIMER fill:#FFB6C1,stroke:#333,stroke-width:2px
+    
+    style TEAMS fill:#FF69B4,stroke:#333,stroke-width:2px
+    style SLACK fill:#808080,stroke:#333,stroke-width:2px
+    style EMAIL fill:#4169E1,stroke:#333,stroke-width:2px
+    style WEBHOOK fill:#20B2AA,stroke:#333,stroke-width:2px
+    
+    style APP_INSIGHTS fill:#FF8C00,stroke:#333,stroke-width:2px
+    style LOG_ANALYTICS fill:#8B4513,stroke:#333,stroke-width:2px
+    style METRICS fill:#2E8B57,stroke:#333,stroke-width:2px
+    style ALERTS fill:#CD5C5C,stroke:#333,stroke-width:2px
+    
+    %% Data Flow Annotations
+    subgraph "Data Flow"
+        %% Input Data
+        subgraph "Inputs"
+            DATA_TAGS[VM Tags Data]
+            DATA_CONFIG[Configuration Data]
+            DATA_METRICS[Metrics Data]
+        end
+        
+        subgraph "Processing"
+            PROC_SCAN[Scan Process]
+            PROC_FILTER[Filter Process]
+            PROC_DECIDED[Decision Process]
+        end
+        
+        subgraph "Outputs"
+            OUTPUT_REPORT[Summary Report]
+            OUTPUT_ALERT[Alerts]
+            OUTPUT_LOGS[Logs]
+        end
+        
+        DATA_TAGS --> PROC_SCAN
+        DATA_CONFIG --> PROC_FILTER
+        DATA_METRICS --> PROC_DECIDED
+        
+        PROC_SCAN --> OUTPUT_REPORT
+        PROC_FILTER --> OUTPUT_ALERT
+        PROC_DECIDED --> OUTPUT_LOGS
+    end
+    
+    %% Security Components
+    subgraph "Security & Compliance"
+        ## Security Components
+        AUTH[Azure AD Auth]
+        RBAC[Role-Based Access]
+        ENCRYPTION[Encryption]
+        MONITORING[Compliance Monitoring]
+        
+        ## Compliance Elements
+        COMPLIANCE[Compliance
+                   Reporting]
+        AUDIT[Audit Logs]
+        BACKUP[Data Backup]
+        
+        %% Security Flow
+        AUTH --> RBAC
+        AUTH --> ENCRYPTION
+        AUTH --> MONITORING
+        
+        COMPLIANCE --> MONITORING
+        AUDIT --> MONITORING
+        BACKUP --> MONITORING
+    end
+    
+    subgraph "Scalability & High Availability"
+        ## Load Balancing
+        LB[Load Balancer]
+        SCALE[Auto Scale]
+        
+        ## Redundancy
+        REPLICATE[Multiple Regions]
+        FAIL_OVER[Failover
+                   Zones]
+        
+        ## Performance
+        CACHE[Cache
+                  Layer]
+        CDN[CDN
+                 Layer]
+    end
+    
+    %% Integration with External Systems
+    subgraph "External Systems"
+        ## Third Party Integrations
+        INTEGRATION_1[Third Party
+                      Tools]
+        INTEGRATION_2[External
+                      APIs]
+        
+        ## Data Exchange
+        DATA_EXCHANGE[Data Exchange
+                      Layer]
+        
+        %% External Connections
+        INTEGRATION_1 --> DATA_EXCHANGE
+        INTEGRATION_2 --> DATA_EXCHANGE
+        DATA_EXCHANGE --> MONITORING
+    end
+    
+    %% Final Architecture Summary
+    subgraph "Architecture Summary"
+        SUMMARY[Complete Cost Watchdog
+               Architecture Overview]
+        
+        ## Key Features
+        FEATURE_1[Automated
+                  Monitoring]
+        FEATURE_2[Smart
+                  Shutdown]
+        FEATURE_3[Comprehensive
+                  Logging]
+        FEATURE_4[Robust
+                  Notifications]
+        FEATURE_5[Cost
+                  Optimization]
+        
+        ## Benefits
+        BENEFIT_1[Reduce Cloud
+                   Costs]
+        BENEFIT_2[Improve
+                   Compliance]
+        BENEFIT_3[Enhanced
+                   Visibility]
+        BENEFIT_4[Automated
+                   Remediation]
+        BENEFIT_5[Better
+                   Security]
+    end

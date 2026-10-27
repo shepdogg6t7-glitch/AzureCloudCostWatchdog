@@ -1,0 +1,16 @@
+# AzureCloudCostWatchdog/terraform/terraform.tfvars.example
+
+# Example terraform.tfvars file
+# Copy this to terraform.tfvars and fill in your values
+
+webhook_url = "https://outlook.office.com/webhook/YourWebhookUrlHere"
+resource_group_name = "rg-cost-watchdog"
+location = "eastus"
+environment = "production"
+function_app_sku = "B1"
+storage_replication_type = "LRS"
+application_insights_retention_days = 90
+log_analytics_retention_days = 30
+monitoring_schedule_minutes = 60
+notification_email = "admin@example.com"
+enable_github_actions = false
