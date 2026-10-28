@@ -111,14 +111,15 @@ class AzureVMScheduler:
         self.last_run = current_time
         return results
 
-    def _shutdown_vm(self, vm: VMInfo) -> None:
-        async def _async_shutdown():
-            async_poller = self.compute_client.virtual_machines.begin_deallocate(
-                vm.resource_group, vm.name
-            )
-            await async_poller.wait()
+        async def _shutdown_vm(self, vm: VMInfo) -> None:
+        # Call the Azure SDK directly
+        async_poller = self.compute_client.virtual_machines.begin_deallocate(
+            vm.resource_group, vm.name
+        )
         
-        _async_shutdown()
+        # Wait for the shutdown to finish
+        await async_poller.wait()
+        
         logger.info(f"VM {vm.name} in {vm.resource_group} scheduled for shutdown")
 
     def _get_shutdown_reason(self, vm: VMInfo) -> str:
@@ -131,7 +132,7 @@ class AzureVMScheduler:
             return "Skipped - AutoShutdown enabled"
         
         if tags.get('Environment') == 'Dev':
-            return "VM in Dev environment"
+            return "VM has Dev environment"
         
         if not tags:
             return "No tags present"
