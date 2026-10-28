@@ -1,5 +1,5 @@
 # README.md
-
+![CI](https://github.com/shepdogg6t7-glitch/costwatchdog/actions/workflows/ci.yml/badge.svg)
 Azure Cloud Cost Watchdog 🐕💸
 
 A serverless Azure solution designed to monitor resources and automatically shut down non-production or untagged Virtual Machines to prevent cloud bill shock.
