@@ -196,3 +196,6 @@ cache/
 *.env.qa
 *.env.uat
 *.env.int
+# Explicitly track project source files that broad patterns would hide
+!pyproject.toml
+!src/function.json
